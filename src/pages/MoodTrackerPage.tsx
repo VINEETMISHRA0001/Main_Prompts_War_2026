@@ -20,7 +20,9 @@ function syncGamification() {
   useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
 }
 
-export default function MoodTrackerPage() {
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
+
+export default function MoodTrackerPage({ embedded }: EmbeddedPageProps = {}) {
   const {
     entries,
     selectedMood,
@@ -44,11 +46,13 @@ export default function MoodTrackerPage() {
   }, [])
 
   return (
-    <div className="space-y-8 max-w-3xl mx-auto">
-      <PageHeader
-        title="Mood Check-in"
-        description="Track how exam preparation affects your emotions — awareness is the first step to managing stress"
-      />
+    <div className={`space-y-8 max-w-3xl ${embedded ? 'mx-auto' : 'mx-auto'}`}>
+      {!embedded && (
+        <PageHeader
+          title="Mood Check-in"
+          description="Track how exam preparation affects your emotions — awareness is the first step to managing stress"
+        />
+      )}
 
       {todayEntry && (
         <motion.div

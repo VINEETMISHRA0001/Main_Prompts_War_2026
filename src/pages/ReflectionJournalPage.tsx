@@ -35,7 +35,9 @@ function syncGamification() {
   useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
 }
 
-export default function ReflectionJournalPage() {
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
+
+export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = {}) {
   const entries = useJournalStore((s) => s.entries)
   const addEntry = useJournalStore((s) => s.addEntry)
   const deleteEntry = useJournalStore((s) => s.deleteEntry)
@@ -69,10 +71,12 @@ export default function ReflectionJournalPage() {
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
-      <PageHeader
-        title="Reflection Journal"
-        description="What went well today? Process emotions during board exams, entrance tests, and result seasons"
-      />
+      {!embedded && (
+        <PageHeader
+          title="Reflection Journal"
+          description="What went well today? Process emotions during board exams, entrance tests, and result seasons"
+        />
+      )}
 
       <Card>
         <CardHeader>

@@ -25,7 +25,9 @@ function syncAchievements() {
   useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
 }
 
-export default function StressTriggersPage() {
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
+
+export default function StressTriggersPage({ embedded }: EmbeddedPageProps = {}) {
   const triggers = useWellnessStore((s) => s.triggers)
   const logTrigger = useWellnessStore((s) => s.logTrigger)
 
@@ -45,10 +47,12 @@ export default function StressTriggersPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        title="Exam Pressure Tracker"
-        description="What caused stress today? Identify triggers during board exams, entrance tests, and result seasons"
-      />
+      {!embedded && (
+        <PageHeader
+          title="Exam Pressure Tracker"
+          description="What caused stress today? Identify triggers during board exams, entrance tests, and result seasons"
+        />
+      )}
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {STRESS_TRIGGERS.map((trigger, index) => {

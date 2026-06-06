@@ -91,13 +91,17 @@ function ToolkitCard({ item }: { item: ToolkitItem }) {
   )
 }
 
-export default function WellnessToolkitPage() {
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
+
+export default function WellnessToolkitPage({ embedded }: EmbeddedPageProps = {}) {
   return (
     <div className="space-y-8">
-      <PageHeader
-        title="Wellness Toolkit"
-        description="Breathing, focus, and recovery tools designed for high-pressure exam preparation"
-      />
+      {!embedded && (
+        <PageHeader
+          title="Wellness Toolkit"
+          description="Breathing, focus, and recovery tools designed for high-pressure exam preparation"
+        />
+      )}
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {mockToolkitItems.map((item, index) => (

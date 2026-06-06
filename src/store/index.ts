@@ -9,6 +9,7 @@ export {
   useDashboardStore,
   useProfileStore,
   useDailyQuests,
+  useSettingsStore,
 } from './slices/dashboardSlice'
 export type { DailyQuests } from './slices/dashboardSlice'
-export { useSettingsStore } from './slices/dashboardSlice'
+export { useDesktopStore } from './slices/desktopSlice'

@@ -1,11 +1,12 @@
 export const ROUTES = {
   HOME: '/',
-  DASHBOARD: '/dashboard',
-  MOOD: '/mood',
-  STRESS: '/stress',
-  JOURNAL: '/journal',
-  TOOLKIT: '/toolkit',
-  PROFILE: '/profile',
+  DESKTOP: '/desktop',
+  DASHBOARD: '/desktop',
+  MOOD: '/desktop?app=mood',
+  STRESS: '/desktop?app=stress',
+  JOURNAL: '/desktop?app=journal',
+  TOOLKIT: '/desktop?app=toolkit',
+  PROFILE: '/desktop?app=profile',
 } as const
 
 export const APP_NAME = 'MindFlow'

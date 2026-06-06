@@ -11,7 +11,9 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics'
 
-export default function DashboardPage() {
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
+
+export default function DashboardPage({ embedded }: EmbeddedPageProps = {}) {
   const {
     stats,
     weeklyTrend,
@@ -25,11 +27,13 @@ export default function DashboardPage() {
   } = useDashboardMetrics()
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        title="Exam Wellness Dashboard"
-        description="How am I feeling? What's affecting me? Am I improving? What should I do next?"
-      />
+    <div className={embedded ? 'space-y-4' : 'space-y-8'}>
+      {!embedded && (
+        <PageHeader
+          title="Exam Wellness Dashboard"
+          description="How am I feeling? What's affecting me? Am I improving? What should I do next?"
+        />
+      )}
 
       <WellnessCompanion />
 

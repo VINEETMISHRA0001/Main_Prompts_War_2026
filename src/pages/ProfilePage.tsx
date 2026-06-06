@@ -7,7 +7,9 @@ import { PageHeader } from '@/components/PageHeader'
 import { useDashboardStore, useSettingsStore } from '@/store/slices/dashboardSlice'
 import { EXAM_OPTIONS } from '@/constants/routes'
 
-export default function ProfilePage() {
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
+
+export default function ProfilePage({ embedded }: EmbeddedPageProps = {}) {
   const profile = useDashboardStore((s) => s.profile)
   const achievements = useDashboardStore((s) => s.achievements)
   const { preferences, updatePreferences } = useSettingsStore()
@@ -18,10 +20,12 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
-      <PageHeader
-        title="My Wellness Progress"
-        description="Track consistency, self-awareness, and healthy habits throughout your exam journey"
-      />
+      {!embedded && (
+        <PageHeader
+          title="My Wellness Progress"
+          description="Track consistency, self-awareness, and healthy habits throughout your exam journey"
+        />
+      )}
 
       <Card>
         <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-6">

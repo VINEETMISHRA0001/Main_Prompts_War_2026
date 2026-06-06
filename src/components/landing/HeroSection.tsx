@@ -37,7 +37,7 @@ export function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link to={ROUTES.DASHBOARD}>
+              <Link to={ROUTES.DESKTOP}>
                 Start Daily Check-in
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
