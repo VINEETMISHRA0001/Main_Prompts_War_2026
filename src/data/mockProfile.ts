@@ -1,4 +1,4 @@
-import type { Achievement, UserPreferences, ToolkitItem } from '@/types'
+import type { Achievement, UserPreferences, ToolkitItem, GuardianProfile } from '@/types'
 
 export const mockAchievements: Achievement[] = [
   {
@@ -50,6 +50,19 @@ export const defaultPreferences: UserPreferences = {
   reducedMotion: false,
   darkMode: false,
   examFocus: 'NEET',
+  voiceCheckInEnabled: true,
+  checkInSchedule: { morning: '08:00', evening: '21:00' },
+}
+
+export const defaultGuardianProfile: GuardianProfile = {
+  name: '',
+  phone: '',
+  email: '',
+  relationship: 'Parent / Guardian',
+  consentSigned: false,
+  consentSignedAt: null,
+  notifyOnRed: true,
+  shareSummaryOnly: true,
 }
 
 export const mockToolkitItems: ToolkitItem[] = [

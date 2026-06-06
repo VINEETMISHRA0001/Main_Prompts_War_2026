@@ -45,6 +45,7 @@ export function ScaleSlider({
         aria-valuemin={1}
         aria-valuemax={10}
         aria-valuenow={displayValue}
+        aria-valuetext={`${displayValue} out of 10`}
       />
       <div className="flex justify-between text-xs text-muted-foreground">
         <span>{invert ? highLabel : lowLabel}</span>

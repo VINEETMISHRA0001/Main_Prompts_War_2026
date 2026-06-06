@@ -34,6 +34,7 @@ export default function App() {
             <Route path="/journal" element={<Navigate to="/desktop?app=journal" replace />} />
             <Route path="/toolkit" element={<Navigate to="/desktop?app=toolkit" replace />} />
             <Route path="/habits" element={<Navigate to="/desktop?app=habits" replace />} />
+            <Route path="/sage" element={<Navigate to="/desktop?app=sage-ai" replace />} />
             <Route path="/profile" element={<Navigate to="/desktop?app=profile" replace />} />
           </Routes>
         </Suspense>

@@ -54,6 +54,7 @@ export function WellnessConsole() {
         type="button"
         onClick={toggleConsole}
         className="w-full flex items-center gap-2 px-4 py-2 text-xs font-mono text-primary hover:bg-white/5"
+        aria-label="Toggle Sage wellness console"
         aria-expanded={consoleOpen}
       >
         <Terminal className="h-4 w-4" aria-hidden />

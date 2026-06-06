@@ -14,7 +14,7 @@ describe('WellnessConsole', () => {
 
   it('toggles console visibility', () => {
     render(<WellnessConsole />)
-    const toggle = screen.getByRole('button', { name: /Sage Console/i })
+    const toggle = screen.getByRole('button', { name: /Toggle Sage wellness console/i })
     fireEvent.click(toggle)
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
   })

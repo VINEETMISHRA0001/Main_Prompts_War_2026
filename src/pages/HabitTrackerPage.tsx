@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -12,11 +12,23 @@ import { useDashboardStore } from '@/store/slices/dashboardSlice'
 import type { EmbeddedPageProps } from '@/constants/desktopApps'
 
 export default function HabitTrackerPage({ embedded }: EmbeddedPageProps = {}) {
-  const weekRate = useHabitStore((s) => s.getWeekCompletionRate())
-  const todayBalance = useWellnessStore((s) => s.getTodayBalance())
+  const habitLogs = useHabitStore((s) => s.logs)
+  const balanceLogs = useWellnessStore((s) => s.balanceLogs)
   const logBalance = useWellnessStore((s) => s.logBalance)
-  const comparison = useWellnessStore((s) => s.getWeeklyBalanceComparison())
   const completeWellnessQuest = useDashboardStore((s) => s.completeWellnessQuest)
+
+  const weekRate = useMemo(
+    () => useHabitStore.getState().getWeekCompletionRate(),
+    [habitLogs],
+  )
+  const todayBalance = useMemo(
+    () => useWellnessStore.getState().getTodayBalance(),
+    [balanceLogs],
+  )
+  const comparison = useMemo(
+    () => useWellnessStore.getState().getWeeklyBalanceComparison(),
+    [balanceLogs],
+  )
 
   const [studyHours, setStudyHours] = useState(todayBalance?.studyHours ?? 6)
   const [breakHours, setBreakHours] = useState(todayBalance?.breakHours ?? 1)

@@ -9,6 +9,10 @@ import { WellnessConsole } from '@/components/desktop/WellnessConsole'
 import { AchievementToast } from '@/components/dashboard/AchievementToast'
 import { useDesktopStore } from '@/store/slices/desktopSlice'
 import { useDailyQuests } from '@/store/slices/dashboardSlice'
+import { useCheckInScheduler } from '@/hooks/useCheckInScheduler'
+import { InAppNotificationStack } from '@/components/notifications/InAppNotificationStack'
+import { VoiceCheckInModal } from '@/components/voice/VoiceCheckInModal'
+import { CrisisModal } from '@/components/voice/CrisisModal'
 import { SkipLink } from '@/components/layout/AppLayout'
 
 const ROUTE_APP_MAP: Record<string, DesktopAppId> = {
@@ -18,6 +22,8 @@ const ROUTE_APP_MAP: Record<string, DesktopAppId> = {
   journal: 'reflection',
   toolkit: 'toolkit',
   habits: 'daily-habits',
+  sage: 'sage-ai',
+  'sage-ai': 'sage-ai',
   profile: 'progress',
 }
 
@@ -31,6 +37,8 @@ export function DesktopShell() {
   const toggleMinimize = useDesktopStore((s) => s.toggleMinimize)
   const pushConsoleLine = useDesktopStore((s) => s.pushConsoleLine)
   const { completed, total } = useDailyQuests()
+
+  useCheckInScheduler()
 
   useEffect(() => {
     const appParam = searchParams.get('app')
@@ -50,6 +58,9 @@ export function DesktopShell() {
     <>
       <SkipLink />
       <AchievementToast />
+      <InAppNotificationStack />
+      <VoiceCheckInModal />
+      <CrisisModal />
       <div className="h-screen flex flex-col overflow-hidden bg-background select-none">
         {/* Desktop area */}
         <main
@@ -77,7 +88,7 @@ export function DesktopShell() {
               Mental wellness desktop for NEET, JEE, CUET, UPSC & Board Exams
             </p>
             <p className="text-xs text-secondary-muted mt-2">
-              🎮 Double-click icons · 💻 Use Sage Console below · 🏆 Complete daily habits
+              🎮 Click icons to open apps · 🌿 Sage AI voice check-ins · 🏆 Daily habits
             </p>
           </div>
 

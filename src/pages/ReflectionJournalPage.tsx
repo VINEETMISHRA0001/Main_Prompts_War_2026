@@ -16,10 +16,10 @@ import {
   filterJournalEntries,
 } from '@/store/slices/journalSlice'
 import { useDashboardStore } from '@/store/slices/dashboardSlice'
-import { useWellnessStore } from '@/store/slices/wellnessSlice'
 import { MOODS, MOOD_MAP, MOOD_TYPES } from '@/constants/moods'
 import { CBT_JOURNAL_PROMPTS } from '@/data/cbtPrompts'
 import { formatDate } from '@/utils/formatDate'
+import { syncAchievementsFromStores } from '@/utils/syncAchievements'
 import type { MoodType } from '@/types'
 import type { EmbeddedPageProps } from '@/constants/desktopApps'
 
@@ -30,14 +30,6 @@ const journalSchema = z.object({
 })
 
 type JournalForm = z.infer<typeof journalSchema>
-
-function syncGamification() {
-  const journalCount = useJournalStore.getState().entries.length
-  const uniqueTriggers = new Set(
-    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
-  ).size
-  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
-}
 
 export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = {}) {
   const entries = useJournalStore((s) => s.entries)
@@ -93,7 +85,7 @@ export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = 
   const onSubmit = (data: JournalForm) => {
     addEntry(data.title, data.content, data.moodTag)
     completeJournalQuest()
-    syncGamification()
+    syncAchievementsFromStores()
     reset({ title: '', content: '', moodTag: null })
     clearDraft()
   }

@@ -16,11 +16,20 @@ export function useDashboardMetrics() {
   const entries = useMoodStore((s) => s.entries)
   const journalEntries = useJournalStore((s) => s.entries)
   const triggers = useWellnessStore((s) => s.triggers)
-  const balanceComparison = useWellnessStore((s) => s.getWeeklyBalanceComparison())
+  const balanceLogs = useWellnessStore((s) => s.balanceLogs)
+  const habitLogs = useHabitStore((s) => s.logs)
   const profile = useDashboardStore((s) => s.profile)
   const preferences = useDashboardStore((s) => s.preferences)
   const { completed: habitsCompleted } = useDailyQuests()
-  const habitWeekRate = useHabitStore((s) => s.getWeekCompletionRate())
+
+  const balanceComparison = useMemo(
+    () => useWellnessStore.getState().getWeeklyBalanceComparison(),
+    [balanceLogs],
+  )
+  const habitWeekRate = useMemo(
+    () => useHabitStore.getState().getWeekCompletionRate(),
+    [habitLogs],
+  )
 
   return useMemo(() => {
     const recentEntries = entries.slice(0, 14)

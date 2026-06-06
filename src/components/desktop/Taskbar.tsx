@@ -64,7 +64,7 @@ export function Taskbar() {
         <span>{xp} XP</span>
         <span>🔥 {streak}d</span>
         <span className="text-secondary-muted">{exam}</span>
-        <time>{time}</time>
+        <time dateTime={new Date().toISOString()}>{time}</time>
       </div>
     </footer>
   )

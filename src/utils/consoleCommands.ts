@@ -3,6 +3,7 @@ import type { DesktopAppId } from '@/constants/desktopApps'
 import { useMoodStore } from '@/store/slices/moodSlice'
 import { useDashboardStore } from '@/store/slices/dashboardSlice'
 import { useDesktopStore } from '@/store/slices/desktopSlice'
+import { useNotificationStore } from '@/store/slices/notificationSlice'
 import { getTodayKey } from '@/utils/gamification'
 
 const APP_ALIASES: Record<string, DesktopAppId> = {
@@ -19,8 +20,9 @@ const APP_ALIASES: Record<string, DesktopAppId> = {
   habit: 'daily-habits',
   profile: 'progress',
   progress: 'progress',
-  sage: 'sage-guide',
-  guide: 'sage-guide',
+  sage: 'sage-ai',
+  guide: 'sage-ai',
+  ai: 'sage-ai',
 }
 
 export function executeConsoleCommand(input: string): string {
@@ -36,7 +38,8 @@ export function executeConsoleCommand(input: string): string {
       return [
         'Available commands:',
         '  help          — show this list',
-        '  open <app>    — open wellness app (mood, stress, journal, habits, toolkit, hub)',
+        '  open <app>    — open app (mood, sage, habits, journal, hub)',
+        '  voice         — start voice check-in',
         '  status        — your wellness stats',
         '  quest         — daily habit progress',
         '  checkin calm  — quick mood check-in',
@@ -70,6 +73,10 @@ export function executeConsoleCommand(input: string): string {
       const completed = [q.mood, q.wellness, q.journal].filter(Boolean).length
       return `Daily habits: ${completed}/3 complete. Open apps to finish today's quests!`
     }
+
+    case 'voice':
+      useNotificationStore.getState().openVoiceModal('manual')
+      return 'Opening voice check-in...'
 
     case 'checkin': {
       const moodName = parts[1] ?? 'calm'

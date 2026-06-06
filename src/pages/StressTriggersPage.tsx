@@ -12,19 +12,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { STRESS_TRIGGERS } from '@/constants/stressTriggers'
 import { useWellnessStore } from '@/store/slices/wellnessSlice'
-import { useJournalStore } from '@/store/slices/journalSlice'
-import { useDashboardStore } from '@/store/slices/dashboardSlice'
 import { PageHeader } from '@/components/PageHeader'
 import { stressInsights } from '@/data/mockStress'
 
-function syncAchievements() {
-  const journalCount = useJournalStore.getState().entries.length
-  const uniqueTriggers = new Set(
-    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
-  ).size
-  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
-}
-
+import { syncAchievementsFromStores } from '@/utils/syncAchievements'
 import type { EmbeddedPageProps } from '@/constants/desktopApps'
 
 export default function StressTriggersPage({ embedded }: EmbeddedPageProps = {}) {
@@ -33,7 +24,7 @@ export default function StressTriggersPage({ embedded }: EmbeddedPageProps = {})
 
   const handleLog = (category: Parameters<typeof logTrigger>[0]) => {
     logTrigger(category)
-    syncAchievements()
+    syncAchievementsFromStores()
   }
 
   const chartData = triggers.map((t) => {

@@ -140,6 +140,81 @@ export interface UserPreferences {
   reducedMotion: boolean
   darkMode: boolean
   examFocus: string
+  voiceCheckInEnabled: boolean
+  checkInSchedule: CheckInSchedule
+}
+
+export interface CheckInSchedule {
+  morning: string
+  evening: string
+}
+
+export type RiskTier = 'green' | 'amber' | 'red' | 'critical'
+
+export interface ProsodyScores {
+  pitchVariance: number
+  energyLevel: number
+  speechRate: number
+  agitationScore: number
+  summary: string
+}
+
+export interface VoiceCheckIn {
+  id: string
+  timestamp: string
+  transcript: string
+  prosody: ProsodyScores
+  riskTier: RiskTier
+  distressScore: number
+  durationMs: number
+  source: 'scheduled' | 'manual' | 'sage-ai'
+}
+
+export interface GuardianProfile {
+  name: string
+  phone: string
+  email: string
+  relationship: string
+  consentSigned: boolean
+  consentSignedAt: string | null
+  notifyOnRed: boolean
+  shareSummaryOnly: boolean
+}
+
+export interface SafetyAlert {
+  id: string
+  checkInId: string
+  tier: RiskTier
+  reason: string
+  guardianNotified: boolean
+  createdAt: string
+}
+
+export interface SageSource {
+  id: number
+  label: string
+  detail: string
+}
+
+export interface SageMessage {
+  id: string
+  role: 'user' | 'sage'
+  content: string
+  timestamp: string
+  sources?: SageSource[]
+  prosody?: ProsodyScores
+  riskTier?: RiskTier
+  isVoice?: boolean
+}
+
+export interface InAppNotification {
+  id: string
+  title: string
+  body: string
+  type: 'check-in' | 'alert' | 'info'
+  createdAt: string
+  read: boolean
+  action?: 'voice-check-in' | 'open-sage-ai'
 }
 
 export type HabitId = 'water' | 'exercise' | 'meditation' | 'sleep' | 'outdoor' | 'study'

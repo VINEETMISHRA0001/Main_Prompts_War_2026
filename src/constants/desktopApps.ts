@@ -9,7 +9,7 @@ export type DesktopAppId =
   | 'toolkit'
   | 'daily-habits'
   | 'progress'
-  | 'sage-guide'
+  | 'sage-ai'
 
 export interface DesktopAppConfig {
   id: DesktopAppId
@@ -78,12 +78,12 @@ export const DESKTOP_APPS: DesktopAppConfig[] = [
     defaultPosition: { x: 180, y: 90 },
   },
   {
-    id: 'sage-guide',
-    label: 'Sage Guide',
+    id: 'sage-ai',
+    label: 'Sage AI',
     icon: '🌿',
-    description: 'Your wellness companion tips',
-    defaultSize: { width: 400, height: 360 },
-    defaultPosition: { x: 220, y: 100 },
+    description: 'Voice wellness AI — Perplexity-style guidance',
+    defaultSize: { width: 640, height: 560 },
+    defaultPosition: { x: 200, y: 60 },
   },
 ]
 
@@ -106,5 +106,5 @@ export const DESKTOP_APP_COMPONENTS: Record<
   toolkit: lazy(() => import('@/pages/WellnessToolkitPage')),
   'daily-habits': lazy(() => import('@/pages/HabitTrackerPage')),
   progress: lazy(() => import('@/pages/ProfilePage')),
-  'sage-guide': lazy(() => import('@/components/desktop/SageGuideApp')),
+  'sage-ai': lazy(() => import('@/pages/SageAIPage')),
 }

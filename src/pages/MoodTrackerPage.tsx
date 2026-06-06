@@ -10,17 +10,8 @@ import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/PageHeader'
 import { useMoodTracker } from '@/hooks/useMoodTracker'
 import { useDashboardStore } from '@/store/slices/dashboardSlice'
-import { useJournalStore } from '@/store/slices/journalSlice'
-import { useWellnessStore } from '@/store/slices/wellnessSlice'
+import { syncAchievementsFromStores } from '@/utils/syncAchievements'
 import type { EmbeddedPageProps } from '@/constants/desktopApps'
-
-function syncGamification() {
-  const journalCount = useJournalStore.getState().entries.length
-  const uniqueTriggers = new Set(
-    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
-  ).size
-  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
-}
 
 export default function MoodTrackerPage({ embedded }: EmbeddedPageProps = {}) {
   const {
@@ -48,11 +39,11 @@ export default function MoodTrackerPage({ embedded }: EmbeddedPageProps = {}) {
     if (!selectedMood) return
     addEntry({ skipMetrics })
     recordMoodCheckIn()
-    syncGamification()
+    syncAchievementsFromStores()
   }
 
   useEffect(() => {
-    syncGamification()
+    syncAchievementsFromStores()
   }, [])
 
   return (

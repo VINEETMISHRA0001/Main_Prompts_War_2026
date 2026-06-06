@@ -1,20 +1,11 @@
 import { motion } from 'framer-motion'
 import { useMoodStore } from '@/store/slices/moodSlice'
 import { useDashboardStore } from '@/store/slices/dashboardSlice'
-import { useJournalStore } from '@/store/slices/journalSlice'
-import { useWellnessStore } from '@/store/slices/wellnessSlice'
+import { syncAchievementsFromStores } from '@/utils/syncAchievements'
 import { MOODS } from '@/constants/moods'
 import type { MoodType } from '@/types'
 import { WellnessCard } from '@/components/WellnessCard'
 import { cn } from '@/utils/cn'
-
-function syncGamification() {
-  const journalCount = useJournalStore.getState().entries.length
-  const uniqueTriggers = new Set(
-    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
-  ).size
-  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
-}
 
 export function QuickMoodCheck() {
   const addQuickEntry = useMoodStore((s) => s.addQuickEntry)
@@ -27,7 +18,7 @@ export function QuickMoodCheck() {
   const handleSelect = (mood: MoodType) => {
     addQuickEntry(mood)
     recordMoodCheckIn()
-    syncGamification()
+    syncAchievementsFromStores()
   }
 
   return (

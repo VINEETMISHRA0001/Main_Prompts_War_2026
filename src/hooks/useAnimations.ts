@@ -1,16 +1,16 @@
 import { useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useReducedMotionPreference } from '@/hooks/useReducedMotionPreference'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export function useReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return useReducedMotionPreference()
 }
 
 export function useAnimations() {
-  const reducedMotion = useReducedMotion()
+  const reducedMotion = useReducedMotionPreference()
 
   const animateCounter = useCallback(
     (element: HTMLElement | null, target: number, duration = 2) => {
@@ -61,7 +61,7 @@ export function useAnimations() {
 }
 
 export function useHeroParticles(containerRef: React.RefObject<HTMLElement | null>) {
-  const reducedMotion = useReducedMotion()
+  const reducedMotion = useReducedMotionPreference()
 
   useEffect(() => {
     const container = containerRef.current
