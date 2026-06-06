@@ -11,20 +11,26 @@ export function useMoodTracker() {
   const entries = useMoodStore((s) => s.entries)
   const selectedMood = useMoodStore((s) => s.selectedMood)
   const note = useMoodStore((s) => s.note)
+  const moodScore = useMoodStore((s) => s.moodScore)
+  const sleepQuality = useMoodStore((s) => s.sleepQuality)
+  const energyLevel = useMoodStore((s) => s.energyLevel)
+  const anxietyLevel = useMoodStore((s) => s.anxietyLevel)
+  const confidenceLevel = useMoodStore((s) => s.confidenceLevel)
   const setSelectedMood = useMoodStore((s) => s.setSelectedMood)
   const setNote = useMoodStore((s) => s.setNote)
+  const setMoodScore = useMoodStore((s) => s.setMoodScore)
+  const setSleepQuality = useMoodStore((s) => s.setSleepQuality)
+  const setEnergyLevel = useMoodStore((s) => s.setEnergyLevel)
+  const setAnxietyLevel = useMoodStore((s) => s.setAnxietyLevel)
+  const setConfidenceLevel = useMoodStore((s) => s.setConfidenceLevel)
   const addEntry = useMoodStore((s) => s.addEntry)
   const addQuickEntry = useMoodStore((s) => s.addQuickEntry)
   const clearForm = useMoodStore((s) => s.clearForm)
 
   const moodDistribution = useMemo(() => {
-    const counts: Record<MoodType, number> = {
-      happy: 0,
-      calm: 0,
-      neutral: 0,
-      stressed: 0,
-      overwhelmed: 0,
-    }
+    const counts = Object.fromEntries(
+      Object.keys(MOOD_MAP).map((k) => [k, 0]),
+    ) as Record<MoodType, number>
     entries.forEach((e) => {
       counts[e.mood] += 1
     })
@@ -40,8 +46,18 @@ export function useMoodTracker() {
     entries,
     selectedMood,
     note,
+    moodScore,
+    sleepQuality,
+    energyLevel,
+    anxietyLevel,
+    confidenceLevel,
     setSelectedMood,
     setNote,
+    setMoodScore,
+    setSleepQuality,
+    setEnergyLevel,
+    setAnxietyLevel,
+    setConfidenceLevel,
     addEntry,
     addQuickEntry,
     clearForm,

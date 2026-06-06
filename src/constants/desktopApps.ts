@@ -7,6 +7,7 @@ export type DesktopAppId =
   | 'exam-pressure'
   | 'reflection'
   | 'toolkit'
+  | 'daily-habits'
   | 'progress'
   | 'sage-guide'
 
@@ -61,6 +62,14 @@ export const DESKTOP_APPS: DesktopAppConfig[] = [
     defaultPosition: { x: 140, y: 80 },
   },
   {
+    id: 'daily-habits',
+    label: 'Daily Habits',
+    icon: '✅',
+    description: 'Hydration, sleep, study & balance logging',
+    defaultSize: { width: 560, height: 520 },
+    defaultPosition: { x: 100, y: 70 },
+  },
+  {
     id: 'progress',
     label: 'My Progress',
     icon: '🏆',
@@ -95,6 +104,7 @@ export const DESKTOP_APP_COMPONENTS: Record<
   'exam-pressure': lazy(() => import('@/pages/StressTriggersPage')),
   reflection: lazy(() => import('@/pages/ReflectionJournalPage')),
   toolkit: lazy(() => import('@/pages/WellnessToolkitPage')),
+  'daily-habits': lazy(() => import('@/pages/HabitTrackerPage')),
   progress: lazy(() => import('@/pages/ProfilePage')),
   'sage-guide': lazy(() => import('@/components/desktop/SageGuideApp')),
 }

@@ -15,6 +15,8 @@ const APP_ALIASES: Record<string, DesktopAppId> = {
   reflect: 'reflection',
   toolkit: 'toolkit',
   tools: 'toolkit',
+  habits: 'daily-habits',
+  habit: 'daily-habits',
   profile: 'progress',
   progress: 'progress',
   sage: 'sage-guide',
@@ -34,7 +36,7 @@ export function executeConsoleCommand(input: string): string {
       return [
         'Available commands:',
         '  help          — show this list',
-        '  open <app>    — open wellness app (mood, stress, journal, toolkit, hub)',
+        '  open <app>    — open wellness app (mood, stress, journal, habits, toolkit, hub)',
         '  status        — your wellness stats',
         '  quest         — daily habit progress',
         '  checkin calm  — quick mood check-in',

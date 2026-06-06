@@ -21,22 +21,46 @@ export const STRESS_TRIGGERS: StressTriggerConfig[] = [
     description: 'Result anxiety and score pressure',
   },
   {
+    category: 'study_backlog',
+    label: 'Study Backlog',
+    icon: '📚',
+    description: 'Syllabus piling up faster than you can cover',
+  },
+  {
     category: 'family',
     label: 'Family Pressure',
     icon: '👨‍👩‍👧',
     description: 'Expectations from family members',
   },
   {
+    category: 'relationships',
+    label: 'Relationships',
+    icon: '💬',
+    description: 'Friendships, dating, or social conflict',
+  },
+  {
     category: 'time',
     label: 'Time Management',
     icon: '⏰',
-    description: 'Feeling behind on syllabus',
+    description: 'Feeling behind on daily targets',
   },
   {
     category: 'sleep',
     label: 'Sleep Issues',
     icon: '😴',
     description: 'Irregular sleep affecting focus',
+  },
+  {
+    category: 'health',
+    label: 'Health Concerns',
+    icon: '🏥',
+    description: 'Physical health or illness worries',
+  },
+  {
+    category: 'financial',
+    label: 'Financial Stress',
+    icon: '💸',
+    description: 'Coaching fees, books, or money pressure',
   },
   {
     category: 'social',

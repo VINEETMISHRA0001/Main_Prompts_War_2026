@@ -1,5 +1,6 @@
 import type { Achievement, MoodEntry, MoodType } from '@/types'
 import { MOOD_MAP } from '@/constants/moods'
+import { getEntryMoodScore } from '@/utils/moodScore'
 
 export function getTodayKey(): string {
   return new Date().toISOString().split('T')[0] ?? ''
@@ -48,8 +49,11 @@ export function getCompanionMessage(
 ): string {
   if (!checkedInToday) return "I'm waiting for your check-in! Tap a mood below — it takes 5 seconds."
   if (questsDone === 3) return 'All quests done today! You crushed it. Rest or revise — you earned it.'
-  if (latestMood === 'stressed' || latestMood === 'overwhelmed') {
+  if (latestMood === 'stressed' || latestMood === 'overwhelmed' || latestMood === 'burned_out') {
     return 'Tough day? Try a breathing exercise from the Toolkit. Small steps count.'
+  }
+  if (latestMood === 'nervous') {
+    return 'Pre-exam nerves are normal. A quick breathing reset can help before your next block.'
   }
   if (questsDone > 0) return `${3 - questsDone} quest${3 - questsDone === 1 ? '' : 's'} left today. Keep going!`
   return "Great check-in! Complete today's quests to level up."
@@ -67,7 +71,7 @@ export function buildWeeklyTrend(entries: MoodEntry[]) {
     const mood =
       dayEntries.length > 0
         ? Math.round(
-            dayEntries.reduce((s, e) => s + MOOD_MAP[e.mood].score, 0) / dayEntries.length,
+            dayEntries.reduce((s, e) => s + getEntryMoodScore(e), 0) / dayEntries.length,
           )
         : 0
     result.push({

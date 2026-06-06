@@ -18,5 +18,6 @@ export const EXAM_OPTIONS = [
   'GATE',
   'CAT',
   'CUET',
+  'SSC',
   'Board Exams',
 ] as const

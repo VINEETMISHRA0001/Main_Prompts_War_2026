@@ -1,8 +1,9 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { motion } from 'framer-motion'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Search } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,19 +11,22 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PageHeader } from '@/components/PageHeader'
-import { useJournalStore } from '@/store/slices/journalSlice'
+import {
+  useJournalStore,
+  filterJournalEntries,
+} from '@/store/slices/journalSlice'
 import { useDashboardStore } from '@/store/slices/dashboardSlice'
 import { useWellnessStore } from '@/store/slices/wellnessSlice'
-import { MOODS } from '@/constants/moods'
-import { MOOD_MAP } from '@/constants/moods'
+import { MOODS, MOOD_MAP, MOOD_TYPES } from '@/constants/moods'
 import { CBT_JOURNAL_PROMPTS } from '@/data/cbtPrompts'
 import { formatDate } from '@/utils/formatDate'
 import type { MoodType } from '@/types'
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
 
 const journalSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
   content: z.string().min(10, 'Write at least 10 characters').max(2000),
-  moodTag: z.enum(['happy', 'calm', 'neutral', 'stressed', 'overwhelmed']).nullable(),
+  moodTag: z.enum(MOOD_TYPES).nullable(),
 })
 
 type JournalForm = z.infer<typeof journalSchema>
@@ -35,13 +39,15 @@ function syncGamification() {
   useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
 }
 
-import type { EmbeddedPageProps } from '@/constants/desktopApps'
-
 export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = {}) {
   const entries = useJournalStore((s) => s.entries)
+  const draft = useJournalStore((s) => s.draft)
   const addEntry = useJournalStore((s) => s.addEntry)
   const deleteEntry = useJournalStore((s) => s.deleteEntry)
+  const saveDraft = useJournalStore((s) => s.saveDraft)
+  const clearDraft = useJournalStore((s) => s.clearDraft)
   const completeJournalQuest = useDashboardStore((s) => s.completeJournalQuest)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const {
     register,
@@ -52,10 +58,32 @@ export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = 
     formState: { errors },
   } = useForm<JournalForm>({
     resolver: zodResolver(journalSchema),
-    defaultValues: { title: '', content: '', moodTag: null },
+    defaultValues: draft,
   })
 
   const selectedMoodTag = watch('moodTag')
+  const titleValue = watch('title')
+  const contentValue = watch('content')
+
+  useEffect(() => {
+    reset(draft)
+  }, [draft, reset])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      saveDraft({
+        title: titleValue ?? '',
+        content: contentValue ?? '',
+        moodTag: selectedMoodTag,
+      })
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [titleValue, contentValue, selectedMoodTag, saveDraft])
+
+  const filteredEntries = useMemo(
+    () => filterJournalEntries(entries, searchQuery),
+    [entries, searchQuery],
+  )
 
   const applyPrompt = (title: string, hint: string) => {
     setValue('title', title)
@@ -66,7 +94,16 @@ export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = 
     addEntry(data.title, data.content, data.moodTag)
     completeJournalQuest()
     syncGamification()
-    reset()
+    reset({ title: '', content: '', moodTag: null })
+    clearDraft()
+  }
+
+  const handleSaveDraft = () => {
+    saveDraft({
+      title: titleValue ?? '',
+      content: contentValue ?? '',
+      moodTag: selectedMoodTag,
+    })
   }
 
   return (
@@ -77,6 +114,12 @@ export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = 
           description="What went well today? Process emotions during board exams, entrance tests, and result seasons"
         />
       )}
+
+      {draft.title || draft.content ? (
+        <p className="text-sm text-primary" role="status">
+          Draft saved automatically — pick up where you left off.
+        </p>
+      ) : null}
 
       <Card>
         <CardHeader>
@@ -144,20 +187,38 @@ export default function ReflectionJournalPage({ embedded }: EmbeddedPageProps = 
                 ))}
               </div>
             </fieldset>
-            <Button type="submit">Save Entry +25 XP</Button>
+            <div className="flex flex-wrap gap-3">
+              <Button type="submit">Save Entry +25 XP</Button>
+              <Button type="button" variant="outline" onClick={handleSaveDraft}>
+                Save draft
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
 
       <div>
-        <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
-        {entries.length === 0 ? (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <h2 className="text-xl font-semibold">Previous Entries</h2>
+          <div className="relative max-w-xs w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden />
+            <Input
+              type="search"
+              placeholder="Search entries..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+              aria-label="Search journal entries"
+            />
+          </div>
+        </div>
+        {filteredEntries.length === 0 ? (
           <p className="text-muted-foreground text-center py-8" role="status">
-            No journal entries yet.
+            {searchQuery ? 'No entries match your search.' : 'No journal entries yet.'}
           </p>
         ) : (
           <div className="space-y-4">
-            {entries.map((entry, index) => (
+            {filteredEntries.map((entry, index) => (
               <motion.div
                 key={entry.id}
                 initial={{ opacity: 0, y: 10 }}

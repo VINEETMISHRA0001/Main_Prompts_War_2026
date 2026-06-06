@@ -1,9 +1,11 @@
-import { Heart, Brain, Flame, BookOpen, AlertTriangle, Scale, Sparkles, Zap } from 'lucide-react'
+import { Heart, Brain, Flame, BookOpen, AlertTriangle, Scale, Sparkles, Zap, Target } from 'lucide-react'
 import { PageHeader } from '@/components/PageHeader'
 import { SectionHeader } from '@/components/SectionHeader'
 import { StatCard } from '@/components/StatCard'
 import { WellnessCard } from '@/components/WellnessCard'
 import { WeeklyTrendChart } from '@/components/dashboard/WeeklyTrendChart'
+import { MonthlyMoodTrend } from '@/components/dashboard/MonthlyMoodTrend'
+import { MoodHeatmap } from '@/components/dashboard/MoodHeatmap'
 import { WellnessCompanion } from '@/components/dashboard/WellnessCompanion'
 import { DailyQuests } from '@/components/dashboard/DailyQuests'
 import { QuickMoodCheck } from '@/components/dashboard/QuickMoodCheck'
@@ -16,13 +18,18 @@ import type { EmbeddedPageProps } from '@/constants/desktopApps'
 export default function DashboardPage({ embedded }: EmbeddedPageProps = {}) {
   const {
     stats,
+    burnout,
     weeklyTrend,
+    monthlyTrend,
+    moodHeatmap,
+    balanceComparison,
     suggestions,
     encouragement,
     examCountdown,
     examName,
     topStressTrigger,
     studyLifeBalance,
+    habitWeekRate,
     dailySummary,
   } = useDashboardMetrics()
 
@@ -83,6 +90,8 @@ export default function DashboardPage({ embedded }: EmbeddedPageProps = {}) {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <WeeklyTrendChart data={weeklyTrend} />
+          <MonthlyMoodTrend data={monthlyTrend} />
+          <MoodHeatmap cells={moodHeatmap} />
           <DailyQuests />
 
           <WellnessCard title="Recommended Wellness Actions" description="Supportive guidance for today's prep">
@@ -119,19 +128,29 @@ export default function DashboardPage({ embedded }: EmbeddedPageProps = {}) {
             </div>
           </WellnessCard>
 
-          <WellnessCard title="Burnout Awareness" description="Early signals during intense prep seasons">
+          <WellnessCard title="Burnout Awareness" description="Low / Medium / High / Critical tiers during intense prep">
             <div className="space-y-2 mt-2">
               <div className="flex justify-between text-sm">
-                <span className="text-secondary-muted">Risk level</span>
-                <span className={stats.burnoutRisk > 55 ? 'text-warning font-medium' : 'text-primary font-medium'}>
-                  {stats.burnoutRisk > 55 ? 'Elevated — take a break' : 'Manageable'}
+                <span className="text-secondary-muted">Risk tier</span>
+                <span className={`font-medium capitalize ${burnout.colorClass}`}>
+                  {burnout.label} ({burnout.score}%)
                 </span>
               </div>
-              <Progress value={stats.burnoutRisk} className="h-2" aria-label="Burnout risk indicator" />
+              <Progress value={burnout.score} className="h-2" aria-label="Burnout risk indicator" />
               <p className="text-xs text-secondary-muted flex items-start gap-1">
                 <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-warning" aria-hidden />
-                Rest is part of preparation. A 15-minute break protects focus and memory.
+                {burnout.recommendation}
               </p>
+            </div>
+          </WellnessCard>
+
+          <WellnessCard title="Habit Consistency" description="Daily wellness habits this week">
+            <div className="flex items-center gap-3 mt-2">
+              <Target className="h-8 w-8 text-primary" aria-hidden />
+              <div>
+                <p className="font-display font-semibold">{habitWeekRate}% completed</p>
+                <p className="text-secondary-muted text-sm">Open Daily Habits to log today</p>
+              </div>
             </div>
           </WellnessCard>
 
@@ -144,6 +163,12 @@ export default function DashboardPage({ embedded }: EmbeddedPageProps = {}) {
                 <span className="text-primary font-medium">{studyLifeBalance}%</span>
               </div>
               <Progress value={studyLifeBalance} className="h-2" />
+              {(balanceComparison.thisWeekStudy > 0 || balanceComparison.lastWeekStudy > 0) && (
+                <p className="text-xs text-secondary-muted">
+                  Avg study: {balanceComparison.thisWeekStudy}h this week vs{' '}
+                  {balanceComparison.lastWeekStudy}h last week
+                </p>
+              )}
             </div>
           </WellnessCard>
 

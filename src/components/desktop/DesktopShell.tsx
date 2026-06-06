@@ -17,6 +17,7 @@ const ROUTE_APP_MAP: Record<string, DesktopAppId> = {
   stress: 'exam-pressure',
   journal: 'reflection',
   toolkit: 'toolkit',
+  habits: 'daily-habits',
   profile: 'progress',
 }
 

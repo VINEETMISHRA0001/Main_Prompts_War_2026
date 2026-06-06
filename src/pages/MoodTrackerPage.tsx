@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { MoodSelector } from '@/components/mood/MoodSelector'
 import { MoodTimeline } from '@/components/mood/MoodTimeline'
+import { MoodMetricsForm } from '@/components/mood/MoodMetricsForm'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -11,6 +12,7 @@ import { useMoodTracker } from '@/hooks/useMoodTracker'
 import { useDashboardStore } from '@/store/slices/dashboardSlice'
 import { useJournalStore } from '@/store/slices/journalSlice'
 import { useWellnessStore } from '@/store/slices/wellnessSlice'
+import type { EmbeddedPageProps } from '@/constants/desktopApps'
 
 function syncGamification() {
   const journalCount = useJournalStore.getState().entries.length
@@ -20,23 +22,31 @@ function syncGamification() {
   useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
 }
 
-import type { EmbeddedPageProps } from '@/constants/desktopApps'
-
 export default function MoodTrackerPage({ embedded }: EmbeddedPageProps = {}) {
   const {
     entries,
     selectedMood,
     note,
+    moodScore,
+    sleepQuality,
+    energyLevel,
+    anxietyLevel,
+    confidenceLevel,
     setSelectedMood,
     setNote,
+    setMoodScore,
+    setSleepQuality,
+    setEnergyLevel,
+    setAnxietyLevel,
+    setConfidenceLevel,
     addEntry,
     todayEntry,
   } = useMoodTracker()
   const recordMoodCheckIn = useDashboardStore((s) => s.recordMoodCheckIn)
 
-  const handleSubmit = () => {
+  const handleSubmit = (skipMetrics = false) => {
     if (!selectedMood) return
-    addEntry()
+    addEntry({ skipMetrics })
     recordMoodCheckIn()
     syncGamification()
   }
@@ -71,6 +81,18 @@ export default function MoodTrackerPage({ embedded }: EmbeddedPageProps = {}) {
         </CardHeader>
         <CardContent className="space-y-6">
           <MoodSelector selected={selectedMood} onSelect={setSelectedMood} />
+          <MoodMetricsForm
+            moodScore={moodScore}
+            sleepQuality={sleepQuality}
+            energyLevel={energyLevel}
+            anxietyLevel={anxietyLevel}
+            confidenceLevel={confidenceLevel}
+            onMoodScoreChange={setMoodScore}
+            onSleepQualityChange={setSleepQuality}
+            onEnergyLevelChange={setEnergyLevel}
+            onAnxietyLevelChange={setAnxietyLevel}
+            onConfidenceLevelChange={setConfidenceLevel}
+          />
           <div className="space-y-2">
             <Label htmlFor="mood-note">Add a note (optional)</Label>
             <Textarea
@@ -85,9 +107,18 @@ export default function MoodTrackerPage({ embedded }: EmbeddedPageProps = {}) {
               {note.length}/500 characters
             </p>
           </div>
-          <Button onClick={handleSubmit} disabled={!selectedMood} className="w-full sm:w-auto">
-            Save Mood Check-in
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button onClick={() => handleSubmit(false)} disabled={!selectedMood}>
+              Save full check-in
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleSubmit(true)}
+              disabled={!selectedMood}
+            >
+              Quick save (mood only)
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

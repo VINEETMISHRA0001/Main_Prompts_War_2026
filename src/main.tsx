@@ -2,8 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
+import { initThemeFromStorage } from '@/utils/theme'
 
-document.documentElement.classList.add('dark')
+initThemeFromStorage()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

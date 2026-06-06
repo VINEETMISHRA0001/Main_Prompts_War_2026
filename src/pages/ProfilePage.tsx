@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { PageHeader } from '@/components/PageHeader'
 import { useDashboardStore, useSettingsStore } from '@/store/slices/dashboardSlice'
 import { EXAM_OPTIONS } from '@/constants/routes'
-
+import { applyTheme } from '@/utils/theme'
 import type { EmbeddedPageProps } from '@/constants/desktopApps'
 
 export default function ProfilePage({ embedded }: EmbeddedPageProps = {}) {
@@ -125,8 +125,9 @@ export default function ProfilePage({ embedded }: EmbeddedPageProps = {}) {
               type="checkbox"
               checked={preferences.darkMode}
               onChange={(e) => {
-                updatePreferences({ darkMode: e.target.checked })
-                document.documentElement.classList.toggle('dark', e.target.checked)
+                const darkMode = e.target.checked
+                updatePreferences({ darkMode })
+                applyTheme(darkMode)
               }}
               className="h-4 w-4 rounded border-border accent-primary"
             />

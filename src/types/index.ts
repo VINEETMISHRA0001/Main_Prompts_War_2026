@@ -1,10 +1,31 @@
-export type MoodType = 'happy' | 'calm' | 'neutral' | 'stressed' | 'overwhelmed'
+export type MoodType =
+  | 'happy'
+  | 'calm'
+  | 'neutral'
+  | 'motivated'
+  | 'stressed'
+  | 'nervous'
+  | 'overwhelmed'
+  | 'burned_out'
+
+export interface MoodMetrics {
+  moodScore: number
+  sleepQuality: number
+  energyLevel: number
+  anxietyLevel: number
+  confidenceLevel: number
+}
 
 export interface MoodEntry {
   id: string
   mood: MoodType
   note: string
   timestamp: string
+  moodScore?: number
+  sleepQuality?: number
+  energyLevel?: number
+  anxietyLevel?: number
+  confidenceLevel?: number
 }
 
 export interface StressTrigger {
@@ -21,6 +42,10 @@ export type StressTriggerCategory =
   | 'time'
   | 'sleep'
   | 'social'
+  | 'relationships'
+  | 'financial'
+  | 'health'
+  | 'study_backlog'
 
 export interface JournalEntry {
   id: string
@@ -28,6 +53,12 @@ export interface JournalEntry {
   moodTag: MoodType | null
   date: string
   title: string
+}
+
+export interface JournalDraft {
+  title: string
+  content: string
+  moodTag: MoodType | null
 }
 
 export interface DashboardStats {
@@ -42,6 +73,19 @@ export interface WeeklyTrendPoint {
   mood: number
   stress: number
   focus: number
+}
+
+export interface MonthlyTrendPoint {
+  date: string
+  label: string
+  mood: number
+}
+
+export interface MoodHeatmapCell {
+  date: string
+  day: number
+  score: number
+  hasEntry: boolean
 }
 
 export interface WellnessSuggestion {
@@ -96,4 +140,28 @@ export interface UserPreferences {
   reducedMotion: boolean
   darkMode: boolean
   examFocus: string
+}
+
+export type HabitId = 'water' | 'exercise' | 'meditation' | 'sleep' | 'outdoor' | 'study'
+
+export interface HabitDayLog {
+  date: string
+  completed: HabitId[]
+}
+
+export interface BalanceLog {
+  date: string
+  studyHours: number
+  breakHours: number
+  sleepHours: number
+}
+
+export type BurnoutTier = 'low' | 'medium' | 'high' | 'critical'
+
+export interface BurnoutAssessment {
+  score: number
+  tier: BurnoutTier
+  label: string
+  recommendation: string
+  colorClass: string
 }
