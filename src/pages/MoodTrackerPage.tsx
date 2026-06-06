@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { MoodSelector } from '@/components/mood/MoodSelector'
 import { MoodTimeline } from '@/components/mood/MoodTimeline'
@@ -5,8 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { useMoodData } from '@/hooks/useMoodData'
-import { useProfileStore } from '@/store/profileStore'
+import { PageHeader } from '@/components/PageHeader'
+import { useMoodTracker } from '@/hooks/useMoodTracker'
+import { useDashboardStore } from '@/store/slices/dashboardSlice'
+import { useJournalStore } from '@/store/slices/journalSlice'
+import { useWellnessStore } from '@/store/slices/wellnessSlice'
+
+function syncGamification() {
+  const journalCount = useJournalStore.getState().entries.length
+  const uniqueTriggers = new Set(
+    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
+  ).size
+  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
+}
 
 export default function MoodTrackerPage() {
   const {
@@ -17,30 +29,35 @@ export default function MoodTrackerPage() {
     setNote,
     addEntry,
     todayEntry,
-  } = useMoodData()
-  const incrementCheckIn = useProfileStore((s) => s.incrementCheckIn)
+  } = useMoodTracker()
+  const recordMoodCheckIn = useDashboardStore((s) => s.recordMoodCheckIn)
 
   const handleSubmit = () => {
     if (!selectedMood) return
     addEntry()
-    incrementCheckIn()
+    recordMoodCheckIn()
+    syncGamification()
   }
+
+  useEffect(() => {
+    syncGamification()
+  }, [])
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Mood Tracker</h1>
-        <p className="text-muted-foreground">How are you feeling today?</p>
-      </div>
+      <PageHeader
+        title="Mood Check-in"
+        description="Track how exam preparation affects your emotions — awareness is the first step to managing stress"
+      />
 
       {todayEntry && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4 text-sm"
+          className="rounded-lg bg-primary/10 border border-primary/20 p-4 text-sm"
           role="status"
         >
-          You&apos;ve already checked in today. You can log another entry if your mood changes.
+          Checked in today! Update your mood anytime if things change.
         </motion.div>
       )}
 
@@ -65,7 +82,7 @@ export default function MoodTrackerPage() {
             </p>
           </div>
           <Button onClick={handleSubmit} disabled={!selectedMood} className="w-full sm:w-auto">
-            Log Mood
+            Save Mood Check-in
           </Button>
         </CardContent>
       </Card>

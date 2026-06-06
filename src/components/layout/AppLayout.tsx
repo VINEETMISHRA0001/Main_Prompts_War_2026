@@ -14,14 +14,15 @@ import { useState } from 'react'
 import { cn } from '@/utils/cn'
 import { ROUTES, APP_NAME } from '@/constants/routes'
 import { Button } from '@/components/ui/button'
+import { useDailyQuests } from '@/store/slices/dashboardSlice'
 
 const navItems = [
-  { to: ROUTES.DASHBOARD, label: 'Dashboard', icon: LayoutDashboard },
-  { to: ROUTES.MOOD, label: 'Mood', icon: Heart },
-  { to: ROUTES.STRESS, label: 'Stress', icon: Brain },
-  { to: ROUTES.JOURNAL, label: 'Journal', icon: BookOpen },
-  { to: ROUTES.TOOLKIT, label: 'Toolkit', icon: Sparkles },
-  { to: ROUTES.PROFILE, label: 'Profile', icon: User },
+  { to: ROUTES.DASHBOARD, label: 'Wellness Hub', icon: LayoutDashboard },
+  { to: ROUTES.MOOD, label: 'Mood Check-in', icon: Heart },
+  { to: ROUTES.STRESS, label: 'Exam Pressure', icon: Brain },
+  { to: ROUTES.JOURNAL, label: 'Reflection', icon: BookOpen },
+  { to: ROUTES.TOOLKIT, label: 'Wellness Tools', icon: Sparkles },
+  { to: ROUTES.PROFILE, label: 'My Progress', icon: User },
 ]
 
 export function SkipLink() {
@@ -37,16 +38,21 @@ export function SkipLink() {
 
 export function AppSidebar() {
   const location = useLocation()
+  const { completed, total } = useDailyQuests()
 
   return (
     <aside
-      className="hidden lg:flex w-64 flex-col border-r border-border/50 glass-strong min-h-screen p-4"
+      className="hidden lg:flex w-64 flex-col border-r border-border bg-surface min-h-screen p-4"
       aria-label="Main navigation"
     >
-      <Link to={ROUTES.DASHBOARD} className="flex items-center gap-2 px-2 py-4 mb-4">
+      <Link to={ROUTES.DASHBOARD} className="flex items-center gap-2 px-2 py-4 mb-2">
         <Leaf className="h-7 w-7 text-primary" aria-hidden />
         <span className="text-xl font-bold gradient-text">{APP_NAME}</span>
       </Link>
+      <div className="mx-2 mb-4 rounded-lg bg-primary/10 border border-primary/20 px-3 py-2 text-xs">
+        <span className="font-medium text-primary">Daily Habits</span>
+        <span className="float-right font-bold">{completed}/{total}</span>
+      </div>
       <nav className="flex flex-col gap-1">
         {navItems.map(({ to, label, icon: Icon }) => {
           const active = location.pathname === to
@@ -91,7 +97,7 @@ export function MobileNav() {
       {open && (
         <nav
           id="mobile-nav"
-          className="absolute left-0 right-0 top-16 z-50 glass-strong border-b border-border p-4"
+          className="absolute left-0 right-0 top-16 z-50 bg-surface border-b border-border p-4"
           aria-label="Mobile navigation"
         >
           {navItems.map(({ to, label, icon: Icon }) => {
@@ -120,7 +126,7 @@ export function MobileNav() {
 
 export function AppHeader() {
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border/50 glass-strong px-4 lg:hidden">
+    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-surface px-4 lg:hidden">
       <Link to={ROUTES.DASHBOARD} className="flex items-center gap-2">
         <Leaf className="h-6 w-6 text-primary" aria-hidden />
         <span className="font-bold gradient-text">{APP_NAME}</span>

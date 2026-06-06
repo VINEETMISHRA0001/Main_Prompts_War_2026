@@ -4,7 +4,7 @@ import { APP_NAME, ROUTES } from '@/constants/routes'
 
 export function LandingNavbar() {
   return (
-    <header className="sticky top-0 z-50 glass-strong border-b border-border/50">
+    <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-xl border-b border-border">
       <nav
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4"
         aria-label="Main navigation"

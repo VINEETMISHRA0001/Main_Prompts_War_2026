@@ -1,8 +1,25 @@
 # Main_Prompts_War_2026
 
-**MindFlow** — A production-grade Mental Wellness Tracker for students preparing for competitive exams (NEET, JEE, UPSC, GATE, CAT, CUET, and Board Exams).
+**MindFlow** — A premium mental wellness companion built specifically for students preparing for high-pressure examinations.
 
-Phase 1 is **frontend only** — mock data, local state (Zustand + localStorage), no backend or authentication.
+Supports NEET, JEE, CUET, CAT, GATE, UPSC, and Board Exams during prep seasons, result periods, and burnout-prone study cycles.
+
+## Problem Statement Alignment
+
+This app helps students:
+
+- Track mood during exam preparation
+- Identify stress triggers (exams, results, family pressure, sleep, time management)
+- Reflect on emotions through CBT-style journaling
+- Build healthy habits with consistency tracking
+- Monitor burnout risk and study–life balance
+- Receive supportive wellness guidance
+
+## Design System
+
+- **Theme:** Black (#050505) + Emerald Green (#00FF94)
+- **Fonts:** Space Grotesk (display), Inter (body)
+- **Inspiration:** Headspace, Calm, Apple Health, Linear, Notion
 
 ## Quick Start
 
@@ -13,63 +30,43 @@ npm run dev
 
 Open **http://localhost:5173**
 
-## Build
+## Scripts
 
-```bash
-npm run build
-npm run preview
-```
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run test` | Unit tests (Vitest + RTL) |
+| `npm run test:coverage` | Coverage report |
+| `npm run test:e2e` | Playwright E2E tests |
 
-## Tech Stack
-
-- React 19 + TypeScript (strict) + Vite
-- shadcn/ui + Aceternity-inspired UI + Tailwind CSS v4
-- GSAP (hero particles, scroll reveals, counters)
-- Framer Motion (cards, modals, page transitions)
-- Recharts (dashboard & stress charts)
-- React Hook Form + Zod (journal validation)
-- Zustand (persistent local state)
-- Lucide React icons
-
-## Pages
-
-| Route | Page |
-|-------|------|
-| `/` | Landing (Hero, Features, Benefits, Stats, FAQ, CTA) |
-| `/dashboard` | Dashboard with wellness widgets & charts |
-| `/mood` | Mood Tracker with emoji selection & timeline |
-| `/stress` | Stress Trigger tracking & insights |
-| `/journal` | Reflection Journal with mood tags |
-| `/toolkit` | Wellness Toolkit (breathing, focus, etc.) |
-| `/profile` | Profile, achievements & preferences |
-
-## Project Structure
+## Architecture
 
 ```
 src/
-├── components/
-│   ├── ui/           # shadcn-style primitives
-│   ├── layout/       # App shell, sidebar, nav
-│   ├── dashboard/    # Stat cards, charts
-│   ├── mood/         # Mood selector, timeline
-│   ├── journal/      # Journal components
-│   ├── toolkit/      # Toolkit cards
-│   └── landing/      # Landing page sections
-├── pages/            # Route pages (lazy loaded)
-├── hooks/            # useMoodData, useDashboardStats, useAnimations
-├── store/            # Zustand stores (mood, journal, stress, profile)
-├── data/             # Mock data
-├── constants/        # Routes, moods, stress triggers
-├── utils/            # cn, formatDate, sanitize
-└── types/            # TypeScript interfaces
+├── components/          # Reusable design system
+│   ├── PageHeader/      StatCard/     WellnessCard/
+│   ├── ChartContainer/  EmptyState/   LoadingState/
+│   └── ui/              # shadcn primitives
+├── pages/               # Route pages (lazy loaded)
+├── hooks/
+│   ├── useMoodTracker()
+│   ├── useDashboardMetrics()
+│   └── useWellnessInsights()
+├── store/slices/
+│   ├── moodSlice
+│   ├── journalSlice
+│   ├── wellnessSlice
+│   ├── dashboardSlice
+│   └── settings (via dashboardSlice)
+└── test/                # Vitest setup
 ```
 
-## Accessibility
+## Testing
 
-- WCAG AA color contrast
-- Skip link, ARIA labels, keyboard navigation
-- Focus indicators on all interactive elements
-- `prefers-reduced-motion` respected for GSAP & Framer Motion
+- **Unit:** Vitest + React Testing Library
+- **Accessibility:** jest-axe
+- **E2E:** Playwright (landing → dashboard → mood flow)
 
 ## License
 

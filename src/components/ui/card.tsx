@@ -5,7 +5,7 @@ const Card = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('glass rounded-xl text-card-foreground', className)}
+      className={cn('wellness-card rounded-xl text-card-foreground', className)}
       {...props}
     />
   ),

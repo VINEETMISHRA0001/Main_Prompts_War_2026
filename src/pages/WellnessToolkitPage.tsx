@@ -11,19 +11,23 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { mockToolkitItems } from '@/data/mockProfile'
+import { PageHeader } from '@/components/PageHeader'
+import { useDashboardStore } from '@/store/slices/dashboardSlice'
 import type { ToolkitItem } from '@/types'
 
 function ToolkitCard({ item }: { item: ToolkitItem }) {
   const [step, setStep] = useState(0)
   const [open, setOpen] = useState(false)
+  const completeWellnessQuest = useDashboardStore((s) => s.completeWellnessQuest)
 
-  const resetAndClose = () => {
+  const resetAndClose = (completed = false) => {
+    if (completed) completeWellnessQuest()
     setStep(0)
     setOpen(false)
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => (v ? setOpen(true) : resetAndClose())}>
+    <Dialog open={open} onOpenChange={(v) => (v ? setOpen(true) : resetAndClose(false))}>
       <DialogTrigger asChild>
         <motion.button
           type="button"
@@ -78,7 +82,7 @@ function ToolkitCard({ item }: { item: ToolkitItem }) {
             {step < item.steps.length - 1 ? (
               <Button onClick={() => setStep((s) => s + 1)}>Next Step</Button>
             ) : (
-              <Button onClick={resetAndClose}>Complete</Button>
+              <Button onClick={() => resetAndClose(true)}>Complete +25 XP</Button>
             )}
           </div>
         </div>
@@ -90,12 +94,10 @@ function ToolkitCard({ item }: { item: ToolkitItem }) {
 export default function WellnessToolkitPage() {
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Wellness Toolkit</h1>
-        <p className="text-muted-foreground">
-          Interactive exercises to help you stay calm, focused, and motivated
-        </p>
-      </div>
+      <PageHeader
+        title="Wellness Toolkit"
+        description="Breathing, focus, and recovery tools designed for high-pressure exam preparation"
+      />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {mockToolkitItems.map((item, index) => (
@@ -125,6 +127,7 @@ export default function WellnessToolkitPage() {
 function BreathingVisualizer() {
   const [phase, setPhase] = useState<'inhale' | 'hold' | 'exhale'>('inhale')
   const [active, setActive] = useState(false)
+  const completeBreathing = useDashboardStore((s) => s.completeBreathing)
 
   const startBreathing = () => {
     setActive(true)
@@ -134,6 +137,7 @@ function BreathingVisualizer() {
     setTimeout(() => {
       setActive(false)
       setPhase('inhale')
+      completeBreathing()
     }, 15000)
   }
 

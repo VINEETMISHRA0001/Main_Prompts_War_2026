@@ -3,23 +3,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Label } from '@/components/ui/label'
-import { useProfileStore } from '@/store/profileStore'
+import { PageHeader } from '@/components/PageHeader'
+import { useDashboardStore, useSettingsStore } from '@/store/slices/dashboardSlice'
 import { EXAM_OPTIONS } from '@/constants/routes'
 
 export default function ProfilePage() {
-  const profile = useProfileStore((s) => s.profile)
-  const achievements = useProfileStore((s) => s.achievements)
-  const preferences = useProfileStore((s) => s.preferences)
-  const updatePreferences = useProfileStore((s) => s.updatePreferences)
+  const profile = useDashboardStore((s) => s.profile)
+  const achievements = useDashboardStore((s) => s.achievements)
+  const { preferences, updatePreferences } = useSettingsStore()
+  const xp = useDashboardStore((s) => s.xp)
+  const level = useDashboardStore((s) => s.level)
 
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Profile</h1>
-        <p className="text-muted-foreground">Your wellness journey at a glance</p>
-      </div>
+      <PageHeader
+        title="My Wellness Progress"
+        description="Track consistency, self-awareness, and healthy habits throughout your exam journey"
+      />
 
       <Card>
         <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-6">
@@ -29,9 +31,11 @@ export default function ProfilePage() {
           <div className="text-center sm:text-left">
             <h2 className="text-xl font-bold">{profile.name}</h2>
             <p className="text-muted-foreground">{profile.exam}</p>
-            <div className="flex items-center gap-2 mt-2 justify-center sm:justify-start">
+            <div className="flex items-center gap-3 mt-2 justify-center sm:justify-start flex-wrap">
               <Flame className="h-4 w-4 text-orange-500" aria-hidden />
               <span className="text-sm font-medium">{profile.streak} day streak</span>
+              <span className="text-sm font-bold text-primary">Lv.{level}</span>
+              <span className="text-sm text-muted-foreground">{xp} XP</span>
             </div>
           </div>
         </CardContent>

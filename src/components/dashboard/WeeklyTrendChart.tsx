@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ChartContainer } from '@/components/ChartContainer'
 import type { WeeklyTrendPoint } from '@/types'
 
 interface WeeklyTrendChartProps {
@@ -17,53 +17,29 @@ interface WeeklyTrendChartProps {
 
 export function WeeklyTrendChart({ data }: WeeklyTrendChartProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Weekly Trend</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[280px] w-full" role="img" aria-label="Weekly mood, stress, and focus trend chart">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-              <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-              <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: '8px',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-card)',
-                }}
-              />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="mood"
-                stroke="oklch(0.55 0.12 180)"
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                name="Mood"
-              />
-              <Line
-                type="monotone"
-                dataKey="stress"
-                stroke="oklch(0.65 0.15 50)"
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                name="Stress"
-              />
-              <Line
-                type="monotone"
-                dataKey="focus"
-                stroke="oklch(0.55 0.12 250)"
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                name="Focus"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </CardContent>
-    </Card>
+    <ChartContainer
+      title="Weekly Wellness Trend"
+      description="How your mood and stress shifted during exam prep this week"
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+          <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#A3A3A3' }} />
+          <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#A3A3A3' }} />
+          <Tooltip
+            contentStyle={{
+              borderRadius: '8px',
+              border: '1px solid rgba(255,255,255,0.08)',
+              background: '#151515',
+              color: '#fff',
+            }}
+          />
+          <Legend />
+          <Line type="monotone" dataKey="mood" stroke="#00FF94" strokeWidth={2} dot={{ r: 4 }} name="Mood" />
+          <Line type="monotone" dataKey="stress" stroke="#F59E0B" strokeWidth={2} dot={{ r: 4 }} name="Stress" />
+          <Line type="monotone" dataKey="focus" stroke="#34D399" strokeWidth={2} dot={{ r: 4 }} name="Focus" />
+        </LineChart>
+      </ResponsiveContainer>
+    </ChartContainer>
   )
 }

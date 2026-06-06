@@ -11,12 +11,28 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { STRESS_TRIGGERS } from '@/constants/stressTriggers'
-import { useStressStore } from '@/store/stressStore'
+import { useWellnessStore } from '@/store/slices/wellnessSlice'
+import { useJournalStore } from '@/store/slices/journalSlice'
+import { useDashboardStore } from '@/store/slices/dashboardSlice'
+import { PageHeader } from '@/components/PageHeader'
 import { stressInsights } from '@/data/mockStress'
 
+function syncAchievements() {
+  const journalCount = useJournalStore.getState().entries.length
+  const uniqueTriggers = new Set(
+    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
+  ).size
+  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
+}
+
 export default function StressTriggersPage() {
-  const triggers = useStressStore((s) => s.triggers)
-  const logTrigger = useStressStore((s) => s.logTrigger)
+  const triggers = useWellnessStore((s) => s.triggers)
+  const logTrigger = useWellnessStore((s) => s.logTrigger)
+
+  const handleLog = (category: Parameters<typeof logTrigger>[0]) => {
+    logTrigger(category)
+    syncAchievements()
+  }
 
   const chartData = triggers.map((t) => {
     const config = STRESS_TRIGGERS.find((c) => c.category === t.category)
@@ -29,10 +45,10 @@ export default function StressTriggersPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Stress Triggers</h1>
-        <p className="text-muted-foreground">Identify and track what causes your stress</p>
-      </div>
+      <PageHeader
+        title="Exam Pressure Tracker"
+        description="What caused stress today? Identify triggers during board exams, entrance tests, and result seasons"
+      />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {STRESS_TRIGGERS.map((trigger, index) => {
@@ -56,7 +72,7 @@ export default function StressTriggersPage() {
                     variant="outline"
                     size="sm"
                     className="w-full"
-                    onClick={() => logTrigger(trigger.category)}
+                    onClick={() => handleLog(trigger.category)}
                     aria-label={`Log ${trigger.label} stress trigger`}
                   >
                     Log Trigger

@@ -1,0 +1,1 @@
+export { WellnessCard } from './WellnessCard'

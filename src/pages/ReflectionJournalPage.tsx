@@ -9,9 +9,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useJournalStore } from '@/store/journalStore'
+import { PageHeader } from '@/components/PageHeader'
+import { useJournalStore } from '@/store/slices/journalSlice'
+import { useDashboardStore } from '@/store/slices/dashboardSlice'
+import { useWellnessStore } from '@/store/slices/wellnessSlice'
 import { MOODS } from '@/constants/moods'
 import { MOOD_MAP } from '@/constants/moods'
+import { CBT_JOURNAL_PROMPTS } from '@/data/cbtPrompts'
 import { formatDate } from '@/utils/formatDate'
 import type { MoodType } from '@/types'
 
@@ -23,10 +27,19 @@ const journalSchema = z.object({
 
 type JournalForm = z.infer<typeof journalSchema>
 
+function syncGamification() {
+  const journalCount = useJournalStore.getState().entries.length
+  const uniqueTriggers = new Set(
+    useWellnessStore.getState().triggers.filter((t) => t.count > 0).map((t) => t.category),
+  ).size
+  useDashboardStore.getState().syncAchievements(journalCount, uniqueTriggers)
+}
+
 export default function ReflectionJournalPage() {
   const entries = useJournalStore((s) => s.entries)
   const addEntry = useJournalStore((s) => s.addEntry)
   const deleteEntry = useJournalStore((s) => s.deleteEntry)
+  const completeJournalQuest = useDashboardStore((s) => s.completeJournalQuest)
 
   const {
     register,
@@ -42,17 +55,43 @@ export default function ReflectionJournalPage() {
 
   const selectedMoodTag = watch('moodTag')
 
+  const applyPrompt = (title: string, hint: string) => {
+    setValue('title', title)
+    setValue('content', hint)
+  }
+
   const onSubmit = (data: JournalForm) => {
     addEntry(data.title, data.content, data.moodTag)
+    completeJournalQuest()
+    syncGamification()
     reset()
   }
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Reflection Journal</h1>
-        <p className="text-muted-foreground">Process your thoughts and track your growth</p>
-      </div>
+      <PageHeader
+        title="Reflection Journal"
+        description="What went well today? Process emotions during board exams, entrance tests, and result seasons"
+      />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Prompts</CardTitle>
+          <p className="text-sm text-muted-foreground">CBT-style starters — no blank page anxiety</p>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          {CBT_JOURNAL_PROMPTS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => applyPrompt(p.title, p.hint)}
+              className="rounded-full border border-border px-3 py-1.5 text-sm hover:bg-primary/10 hover:border-primary transition-colors"
+            >
+              {p.title}
+            </button>
+          ))}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -101,7 +140,7 @@ export default function ReflectionJournalPage() {
                 ))}
               </div>
             </fieldset>
-            <Button type="submit">Save Entry</Button>
+            <Button type="submit">Save Entry +25 XP</Button>
           </form>
         </CardContent>
       </Card>

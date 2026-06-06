@@ -1,10 +1,12 @@
 import { Outlet } from 'react-router-dom'
 import { AppHeader, AppSidebar, SkipLink } from '@/components/layout/AppLayout'
+import { AchievementToast } from '@/components/dashboard/AchievementToast'
 
 export function DashboardLayout() {
   return (
     <>
       <SkipLink />
+      <AchievementToast />
       <div className="flex min-h-screen">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
